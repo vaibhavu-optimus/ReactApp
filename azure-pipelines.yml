@@ -9,7 +9,7 @@ pr:
      - main
 
 variables:
-  nodeVersion: '18.18.1'
+  nodeVersion: '20.19.5'
 
 pool:
   vmImage: ubuntu-latest
