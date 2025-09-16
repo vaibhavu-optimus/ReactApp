@@ -1,0 +1,53 @@
+trigger:
+ branches:
+   include:
+     - main
+
+pr:
+ branches:
+   include:
+     - main
+
+variables:
+  - name: nodeVersion
+    value : '20.19.5'
+
+  - group: 'Variable Group POC'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: BuildAndTest
+    displayName: 'Build and Test Stage'
+    jobs:
+      - job: BuildAndTestJob
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '$(nodeVersion)'
+            displayName: 'Install NodeJS'
+
+          - script: |
+              npm install
+            displayName: 'Install Dependencies'
+
+          - script: |
+              npm run build
+          
+          - script: |
+              echo "$(secret2)"
+
+          - task: ArchiveFiles@2
+            inputs:
+             rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist'
+             includeRootFolder: false
+             archiveType: 'zip'
+             archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
+             replaceExistingArchive: true
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/app.zip'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
