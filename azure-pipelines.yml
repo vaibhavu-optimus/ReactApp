@@ -9,7 +9,10 @@ pr:
      - main
 
 variables:
-  nodeVersion: '20.19.5'
+  - name: nodeVersion
+    value : '20.19.5'
+
+  - group: 'Variable Group POC'
 
 pool:
   vmImage: ubuntu-latest
@@ -31,6 +34,9 @@ stages:
 
           - script: |
               npm run build
+          
+          - script: |
+              '$(secret2)'
 
           - task: ArchiveFiles@2
             inputs:
